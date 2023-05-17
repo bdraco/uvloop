@@ -66,7 +66,7 @@ cdef class Loop:
         bint _listening_signals
         int _old_signal_wakeup_id
 
-        set _timers
+        public set _scheduled
         dict _polls
 
         UVProcess active_process_handler

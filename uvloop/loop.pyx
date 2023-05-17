@@ -156,7 +156,7 @@ cdef class Loop:
         self._fd_to_reader_fileobj = {}
         self._fd_to_writer_fileobj = {}
 
-        self._timers = set()
+        self._scheduled = set()
         self._polls = {}
 
         self._recv_buffer_in_use = 0
@@ -576,8 +576,8 @@ cdef class Loop:
 
             self._polls.clear()
 
-        if self._timers:
-            for timer_cbhandle in tuple(self._timers):
+        if self._scheduled:
+            for timer_cbhandle in tuple(self._scheduled):
                 timer_cbhandle.cancel()
 
         # Close all remaining handles
@@ -600,9 +600,9 @@ cdef class Loop:
                 socket_dec_io_ref(fileobj)
             self._fd_to_reader_fileobj.clear()
 
-        if self._timers:
+        if self._scheduled:
             raise RuntimeError(
-                f"new timers were queued during loop closing: {self._timers}")
+                f"new timers were queued during loop closing: {self._scheduled}")
 
         if self._polls:
             raise RuntimeError(

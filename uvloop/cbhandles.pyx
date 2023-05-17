@@ -195,8 +195,8 @@ cdef class TimerHandle:
         self.timer.start()
         self._when = self.timer.get_when() * 1e-3
 
-        # Only add to loop._timers when `self.timer` is successfully created
-        loop._timers.add(self)
+        # Only add to loop._scheduled when `self.timer` is successfully created
+        loop._scheduled.add(self)
 
     property _source_traceback:
         def __get__(self):
@@ -223,7 +223,7 @@ cdef class TimerHandle:
         self.args = None
 
         try:
-            self.loop._timers.remove(self)
+            self.loop._scheduled.remove(self)
         finally:
             self.timer._close()
             self.timer = None  # let the UVTimer handle GC
